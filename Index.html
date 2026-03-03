@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Board</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #fff0f5;
+      --surface: #ffe4ef;
+      --deep: #7d1c4a;
+      --pink: #e8437a;
+      --rose: #f472a8;
+      --blush: #fbc8dc;
+      --muted: #b0607e;
+      --border: #f0b8d0;
+      --text: #3a0a20;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      min-height: 100vh;
+      background-image: radial-gradient(circle at 20% 0%, #ffd6e880 0%, transparent 50%),
+                        radial-gradient(circle at 80% 100%, #ffc0d880 0%, transparent 50%);
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--deep) 0%, #b5275f 100%);
+      color: #fff0f5;
+      padding: 1.8rem 2rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid var(--rose);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 24px rgba(125,28,74,0.25);
+    }
+
+    .site-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
+
+    .site-sub {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--blush);
+      margin-top: 0.2rem;
+    }
+
+    .admin-btn {
+      background: transparent;
+      border: 1.5px solid var(--rose);
+      color: #fff0f5;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.55rem 1.2rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 2px;
+    }
+    .admin-btn:hover, .admin-btn.active { background: var(--rose); border-color: var(--rose); color: var(--deep); }
+
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(58,10,32,0.75);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .overlay.show { display: flex; }
+
+    .modal {
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-top: 4px solid var(--pink);
+      padding: 2.5rem;
+      width: min(400px, 92vw);
+      position: relative;
+      box-shadow: 0 20px 60px rgba(125,28,74,0.3);
+      border-radius: 4px;
+      animation: popIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.9) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      color: var(--deep);
+      margin-bottom: 0.3rem;
+    }
+    .modal p { font-size: 0.72rem; color: var(--muted); margin-bottom: 1.5rem; }
+
+    .pin-dots {
+      display: flex;
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+      justify-content: center;
+    }
+
+    .pin-dot {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: transparent;
+      transition: all 0.15s;
+    }
+    .pin-dot.filled { background: var(--pink); border-color: var(--pink); }
+    .pin-dot.error { border-color: #c0392b; background: #c0392b; }
+
+    .numpad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+
+    .numpad-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-family: 'DM Mono', monospace;
+      font-size: 1.1rem;
+      padding: 0.9rem;
+      cursor: pointer;
+      transition: all 0.12s;
+      color: var(--deep);
+      border-radius: 3px;
+    }
+    .numpad-btn:hover { background: var(--pink); color: white; border-color: var(--pink); }
+    .numpad-btn:active { transform: scale(0.95); }
+    .numpad-btn.del { font-size: 0.75rem; letter-spacing: 0.05em; }
+    .numpad-btn.empty { visibility: hidden; }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--muted);
+      line-height: 1;
+    }
+    .modal-close:hover { color: var(--pink); }
+
+    .pin-error {
+      font-size: 0.7rem;
+      color: #c0392b;
+      text-align: center;
+      min-height: 1rem;
+      margin-top: 0.6rem;
+    }
+
+    .post-form {
+      background: white;
+      border: 1.5px solid var(--border);
+      border-top: 3px solid var(--pink);
+      padding: 1.5rem;
+      margin-bottom: 3rem;
+      display: none;
+      box-shadow: 0 4px 20px rgba(232,67,122,0.1);
+      border-radius: 4px;
+      animation: slideDown 0.3s ease;
+    }
+    .post-form.show { display: block; }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .post-form label {
+      display: block;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .post-form input,
+    .post-form textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.88rem;
+      padding: 0.75rem;
+      color: var(--text);
+      resize: vertical;
+      margin-bottom: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      border-radius: 3px;
+    }
+    .post-form input:focus,
+    .post-form textarea:focus { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(232,67,122,0.1); }
+    .post-form textarea { min-height: 130px; }
+
+    .submit-btn {
+      background: linear-gradient(135deg, var(--pink), var(--deep));
+      color: white;
+      border: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 0.8rem 1.8rem;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      border-radius: 3px;
+    }
+    .submit-btn:hover { opacity: 0.88; }
+    .submit-btn:active { transform: scale(0.98); }
+    .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .form-row { display: flex; gap: 1rem; justify-content: space-between; align-items: center; }
+    .form-msg { font-size: 0.7rem; color: var(--muted); }
+
+    .section-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .post-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--rose);
+      padding: 1.5rem 1.5rem 1.2rem;
+      margin-bottom: 2rem;
+      border-radius: 0 4px 4px 0;
+      box-shadow: 0 2px 12px rgba(232,67,122,0.07);
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .post-meta { font-size: 0.62rem; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+
+    .post-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.55rem;
+      line-height: 1.25;
+      color: var(--deep);
+      margin-bottom: 0.6rem;
+    }
+
+    .post-body { font-size: 0.85rem; line-height: 1.8; color: #5a2035; white-space: pre-wrap; margin-bottom: 1rem; }
+
+    .comments-section { margin-top: 1rem; padding-top: 0.9rem; border-top: 1px dashed var(--border); }
+
+    .comments-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .comments-label:hover { color: var(--pink); }
+
+    .comment-item { padding: 0.55rem 0; border-bottom: 1px solid rgba(240,184,208,0.5); font-size: 0.78rem; animation: fadeIn 0.3s ease; }
+    .comment-item:last-child { border-bottom: none; }
+    .comment-author { font-weight: 500; color: var(--deep); margin-right: 0.5rem; }
+    .comment-time { font-size: 0.58rem; color: var(--muted); }
+    .comment-text { margin-top: 0.2rem; line-height: 1.5; color: #5a2035; }
+
+    .comment-form { display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; }
+
+    .comment-form input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.76rem;
+      padding: 0.5rem 0.75rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+      flex-shrink: 0;
+      border-radius: 3px;
+    }
+    .comment-form input:focus { border-color: var(--pink); }
+    .comment-name { width: 130px; }
+    .comment-text-input { flex: 1; min-width: 150px; }
+
+    .comment-submit {
+      background: var(--surface);
+      color: var(--deep);
+      border: 1px solid var(--border);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s;
+      border-radius: 3px;
+    }
+    .comment-submit:hover { background: var(--pink); color: white; border-color: var(--pink); }
+
+    .empty-state { text-align: center; padding: 5rem 2rem; color: var(--muted); }
+    .empty-state .big { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-style: italic; color: var(--rose); margin-bottom: 0.5rem; }
+    .empty-state small { font-size: 0.68rem; letter-spacing: 0.1em; }
+
+    .loading { text-align: center; padding: 3rem; font-size: 0.72rem; letter-spacing: 0.15em; color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="site-title">martiin8</div>
+    <div class="site-sub">martiin 8 ii mend</div>
+  </div>
+  <button class="admin-btn" id="adminToggle">+ Post</button>
+</header>
+
+<main>
+  <div class="post-form" id="postForm">
+    <label>Title</label>
+    <input type="text" id="postTitle" placeholder="ner bichne uu" maxlength="120"/>
+    <label>Body</label>
+    <textarea id="postBody" placeholder="ium bicheerei"></textarea>
+    <div class="form-row">
+      <button class="submit-btn" id="submitPost">Publish →</button>
+      <span class="form-msg" id="formMsg"></span>
+    </div>
+  </div>
+
+  <div class="section-label">ohidiin ners</div>
+  <div id="postsContainer">
+    <div class="loading">loading…</div>
+  </div>
+</main>
+
+<div class="overlay" id="pinOverlay">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">&times;</button>
+    <h2>Admin Access</h2>
+    <p>pin???.</p>
+    <div class="pin-dots" id="pinDots">
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+    </div>
+    <div class="numpad">
+      <button class="numpad-btn" data-n="1">1</button>
+      <button class="numpad-btn" data-n="2">2</button>
+      <button class="numpad-btn" data-n="3">3</button>
+      <button class="numpad-btn" data-n="4">4</button>
+      <button class="numpad-btn" data-n="5">5</button>
+      <button class="numpad-btn" data-n="6">6</button>
+      <button class="numpad-btn" data-n="7">7</button>
+      <button class="numpad-btn" data-n="8">8</button>
+      <button class="numpad-btn" data-n="9">9</button>
+      <button class="numpad-btn empty"></button>
+      <button class="numpad-btn" data-n="0">0</button>
+      <button class="numpad-btn del" id="delBtn">DEL</button>
+    </div>
+    <div class="pin-error" id="pinError"></div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getFirestore, collection, addDoc, onSnapshot,
+    orderBy, query, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const ADMIN_PIN = "1234";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBv4e98VudIn6j4ez9QI4O7Gwz12c8NZpY",
+    authDomain: "martin8-6583c.firebaseapp.com",
+    projectId: "martin8-6583c",
+    storageBucket: "martin8-6583c.firebasestorage.app",
+    messagingSenderId: "640451919435",
+    appId: "1:640451919435:web:52cdb18b47edd13ac657ce",
+    measurementId: "G-GY33YYNFBB"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  let isAdmin = false;
+  let pinEntry = "";
+  const PIN_LENGTH = ADMIN_PIN.length;
+
+  const adminToggle    = document.getElementById("adminToggle");
+  const pinOverlay     = document.getElementById("pinOverlay");
+  const modalClose     = document.getElementById("modalClose");
+  const pinDots        = document.getElementById("pinDots");
+  const pinError       = document.getElementById("pinError");
+  const delBtn         = document.getElementById("delBtn");
+  const postForm       = document.getElementById("postForm");
+  const postTitle      = document.getElementById("postTitle");
+  const postBody       = document.getElementById("postBody");
+  const submitPost     = document.getElementById("submitPost");
+  const formMsg        = document.getElementById("formMsg");
+  const postsContainer = document.getElementById("postsContainer");
+
+  function updateDots() {
+    const dots = pinDots.querySelectorAll(".pin-dot");
+    dots.forEach((d, i) => { d.classList.toggle("filled", i < pinEntry.length); d.classList.remove("error"); });
+    pinError.textContent = "";
+  }
+
+  function shakeError() {
+    const dots = pinDots.querySelectorAll(".pin-dot");
+    dots.forEach(d => d.classList.add("error"));
+    pinError.textContent = " chi ashid bish.";
+    pinEntry = "";
+    setTimeout(() => { dots.forEach(d => d.classList.remove("error")); updateDots(); }, 900);
+  }
+
+  document.querySelectorAll(".numpad-btn[data-n]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (pinEntry.length >= PIN_LENGTH) return;
+      pinEntry += btn.dataset.n;
+      updateDots();
+      if (pinEntry.length === PIN_LENGTH) {
+        setTimeout(() => {
+          if (pinEntry === ADMIN_PIN) {
+            isAdmin = true;
+            pinOverlay.classList.remove("show");
+            postForm.classList.add("show");
+            adminToggle.classList.add("active");
+            pinEntry = "";
+            updateDots();
+          } else {
+            shakeError();
+          }
+        }, 150);
+      }
+    });
+  });
+
+  delBtn.addEventListener("click", () => { pinEntry = pinEntry.slice(0, -1); updateDots(); });
+
+  adminToggle.addEventListener("click", () => {
+    if (isAdmin) {
+      isAdmin = false;
+      postForm.classList.remove("show");
+      adminToggle.classList.remove("active");
+    } else {
+      pinOverlay.classList.add("show");
+      pinEntry = "";
+      updateDots();
+    }
+  });
+
+  modalClose.addEventListener("click", () => { pinOverlay.classList.remove("show"); pinEntry = ""; updateDots(); });
+  pinOverlay.addEventListener("click", e => { if (e.target === pinOverlay) { pinOverlay.classList.remove("show"); pinEntry = ""; updateDots(); } });
+
+  submitPost.addEventListener("click", async () => {
+    const title = postTitle.value.trim();
+    const body  = postBody.value.trim();
+    if (!title || !body) { formMsg.textContent = "Fill in both fields."; return; }
+    submitPost.disabled = true;
+    formMsg.textContent = "…";
+    try {
+      await addDoc(collection(db, "posts"), { title, body, createdAt: serverTimestamp() });
+      postTitle.value = "";
+      postBody.value  = "";
+      formMsg.textContent = "✓ done!";
+      setTimeout(() => formMsg.textContent = "", 2500);
+    } catch (err) {
+      formMsg.textContent = "Error: " + err.message;
+    }
+    submitPost.disabled = false;
+  });
+
+  function formatDate(ts) {
+    if (!ts) return "uduuhun";
+    const d = ts.toDate ? ts.toDate() : new Date(ts);
+    return d.toLocaleDateString("en-US", { year:"numeric", month:"long", day:"numeric" }) + "  ·  " + d.toLocaleTimeString("en-US", { hour:"2-digit", minute:"2-digit" });
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  function loadComments(postId, listEl) {
+    const q = query(collection(db, "posts", postId, "comments"), orderBy("createdAt", "asc"));
+    onSnapshot(q, snap => {
+      listEl.innerHTML = "";
+      snap.forEach(d => {
+        const c = d.data();
+        listEl.innerHTML += `<div class="comment-item"><span class="comment-author">${escHtml(c.name || "Anonymous")}</span><span class="comment-time">${formatDate(c.createdAt)}</span><div class="comment-text">${escHtml(c.text)}</div></div>`;
+      });
+    });
+  }
+
+  function renderPost(id, data) {
+    const card = document.createElement("div");
+    card.className = "post-card";
+    card.innerHTML = `<div class="post-meta">${formatDate(data.createdAt)}</div><div class="post-title">${escHtml(data.title)}</div><div class="post-body">${escHtml(data.body)}</div><div class="comments-section"><div class="comments-label">♡ Comments</div><div class="comments-list"></div><div class="comment-form"><input class="comment-name" type="text" placeholder="Your name" maxlength="40"/><input class="comment-text-input" type="text" placeholder="Leave a comment…" maxlength="500"/><button class="comment-submit">Send</button></div></div>`;
+    loadComments(id, card.querySelector(".comments-list"));
+    card.querySelector(".comment-submit").addEventListener("click", async () => {
+      const nameEl = card.querySelector(".comment-name");
+      const textEl = card.querySelector(".comment-text-input");
+      const name = nameEl.value.trim() || "Anonymous";
+      const text = textEl.value.trim();
+      if (!text) return;
+      try {
+        await addDoc(collection(db, "posts", id, "comments"), { name, text, createdAt: serverTimestamp() });
+        textEl.value = "";
+      } catch(e) { alert("Error: " + e.message); }
+    });
+    return card;
+  }
+
+  const postsQuery = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+  onSnapshot(postsQuery, snap => {
+    postsContainer.innerHTML = "";
+    if (snap.empty) {
+      postsContainer.innerHTML = `<div class="empty-state"><div class="big">Nothing yet.</div><small>The author hasn't posted anything.</small></div>`;
+      return;
+    }
+    snap.forEach(d => postsContainer.appendChild(renderPost(d.id, d.data())));
+  }, err => {
+    postsContainer.innerHTML = `<div class="empty-state"><div class="big">Connection error.</div><small>${err.message}</small></div>`;
+  });
+</script>
+</body>
+  </html>

@@ -261,6 +261,7 @@
       border-radius: 0 4px 4px 0;
       box-shadow: 0 2px 12px rgba(232,67,122,0.07);
       animation: fadeIn 0.4s ease;
+      position: relative;
     }
 
     @keyframes fadeIn {
@@ -279,6 +280,27 @@
     }
 
     .post-body { font-size: 0.85rem; line-height: 1.8; color: #5a2035; white-space: pre-wrap; margin-bottom: 1rem; }
+
+    /* Delete button */
+    .delete-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 3px;
+      display: none;
+    }
+    .delete-btn.show { display: block; }
+    .delete-btn:hover { background: #c0392b; color: white; border-color: #c0392b; }
 
     .comments-section { margin-top: 1rem; padding-top: 0.9rem; border-top: 1px dashed var(--border); }
 
@@ -368,11 +390,12 @@
   </div>
 </main>
 
+<!-- PIN Overlay for Admin/Delete -->
 <div class="overlay" id="pinOverlay">
   <div class="modal">
     <button class="modal-close" id="modalClose">&times;</button>
-    <h2>Admin Access</h2>
-    <p>pin???.</p>
+    <h2 id="modalTitle">Admin Access</h2>
+    <p id="modalDesc">pin???.</p>
     <div class="pin-dots" id="pinDots">
       <div class="pin-dot"></div>
       <div class="pin-dot"></div>
@@ -401,7 +424,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import {
     getFirestore, collection, addDoc, onSnapshot,
-    orderBy, query, serverTimestamp
+    orderBy, query, serverTimestamp, deleteDoc, doc
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const ADMIN_PIN = "1234";
@@ -412,7 +435,7 @@
     projectId: "martin8-6583c",
     storageBucket: "martin8-6583c.firebasestorage.app",
     messagingSenderId: "640451919435",
-    appId: "1:640451919435:web:52cdb18b47edd13ac657ce",
+    appId: "1:640451919435:web:52cdb18b47edd13ac657fe",
     measurementId: "G-GY33YYNFBB"
   };
 
@@ -421,11 +444,15 @@
 
   let isAdmin = false;
   let pinEntry = "";
+  let pinAction = null; // 'admin' or 'delete'
+  let deletePostId = null;
   const PIN_LENGTH = ADMIN_PIN.length;
 
   const adminToggle    = document.getElementById("adminToggle");
   const pinOverlay     = document.getElementById("pinOverlay");
   const modalClose     = document.getElementById("modalClose");
+  const modalTitle     = document.getElementById("modalTitle");
+  const modalDesc      = document.getElementById("modalDesc");
   const pinDots        = document.getElementById("pinDots");
   const pinError       = document.getElementById("pinError");
   const delBtn         = document.getElementById("delBtn");
@@ -445,9 +472,34 @@
   function shakeError() {
     const dots = pinDots.querySelectorAll(".pin-dot");
     dots.forEach(d => d.classList.add("error"));
-    pinError.textContent = " chi ashid bish.";
+    pinError.textContent = "chi ashid bish.";
     pinEntry = "";
     setTimeout(() => { dots.forEach(d => d.classList.remove("error")); updateDots(); }, 900);
+  }
+
+  function openPinModal(action, postId = null) {
+    pinAction = action;
+    deletePostId = postId;
+    pinEntry = "";
+    
+    if (action === 'admin') {
+      modalTitle.textContent = "Admin Access";
+      modalDesc.textContent = "pin???.";
+    } else if (action === 'delete') {
+      modalTitle.textContent = "Delete Post";
+      modalDesc.textContent = "Enter PIN to delete this post.";
+    }
+    
+    updateDots();
+    pinOverlay.classList.add("show");
+  }
+
+  function closePinModal() {
+    pinOverlay.classList.remove("show");
+    pinEntry = "";
+    pinAction = null;
+    deletePostId = null;
+    updateDots();
   }
 
   document.querySelectorAll(".numpad-btn[data-n]").forEach(btn => {
@@ -455,15 +507,27 @@
       if (pinEntry.length >= PIN_LENGTH) return;
       pinEntry += btn.dataset.n;
       updateDots();
+      
       if (pinEntry.length === PIN_LENGTH) {
-        setTimeout(() => {
+        setTimeout(async () => {
           if (pinEntry === ADMIN_PIN) {
-            isAdmin = true;
-            pinOverlay.classList.remove("show");
-            postForm.classList.add("show");
-            adminToggle.classList.add("active");
-            pinEntry = "";
-            updateDots();
+            // PIN correct
+            if (pinAction === 'admin') {
+              isAdmin = true;
+              closePinModal();
+              postForm.classList.add("show");
+              adminToggle.classList.add("active");
+              updateDeleteButtons();
+            } else if (pinAction === 'delete' && deletePostId) {
+              try {
+                await deleteDoc(doc(db, "posts", deletePostId));
+                closePinModal();
+              } catch (err) {
+                pinError.textContent = "Delete failed: " + err.message;
+                pinEntry = "";
+                updateDots();
+              }
+            }
           } else {
             shakeError();
           }
@@ -479,15 +543,14 @@
       isAdmin = false;
       postForm.classList.remove("show");
       adminToggle.classList.remove("active");
+      updateDeleteButtons();
     } else {
-      pinOverlay.classList.add("show");
-      pinEntry = "";
-      updateDots();
+      openPinModal('admin');
     }
   });
 
-  modalClose.addEventListener("click", () => { pinOverlay.classList.remove("show"); pinEntry = ""; updateDots(); });
-  pinOverlay.addEventListener("click", e => { if (e.target === pinOverlay) { pinOverlay.classList.remove("show"); pinEntry = ""; updateDots(); } });
+  modalClose.addEventListener("click", closePinModal);
+  pinOverlay.addEventListener("click", e => { if (e.target === pinOverlay) closePinModal(); });
 
   submitPost.addEventListener("click", async () => {
     const title = postTitle.value.trim();
@@ -506,6 +569,12 @@
     }
     submitPost.disabled = false;
   });
+
+  function updateDeleteButtons() {
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.classList.toggle('show', isAdmin);
+    });
+  }
 
   function formatDate(ts) {
     if (!ts) return "uduuhun";
@@ -531,8 +600,29 @@
   function renderPost(id, data) {
     const card = document.createElement("div");
     card.className = "post-card";
-    card.innerHTML = `<div class="post-meta">${formatDate(data.createdAt)}</div><div class="post-title">${escHtml(data.title)}</div><div class="post-body">${escHtml(data.body)}</div><div class="comments-section"><div class="comments-label">♡ Comments</div><div class="comments-list"></div><div class="comment-form"><input class="comment-name" type="text" placeholder="Your name" maxlength="40"/><input class="comment-text-input" type="text" placeholder="Leave a comment…" maxlength="500"/><button class="comment-submit">Send</button></div></div>`;
+    card.innerHTML = `
+      <button class="delete-btn ${isAdmin ? 'show' : ''}" data-post-id="${id}">Delete</button>
+      <div class="post-meta">${formatDate(data.createdAt)}</div>
+      <div class="post-title">${escHtml(data.title)}</div>
+      <div class="post-body">${escHtml(data.body)}</div>
+      <div class="comments-section">
+        <div class="comments-label">♡ Comments</div>
+        <div class="comments-list"></div>
+        <div class="comment-form">
+          <input class="comment-name" type="text" placeholder="Your name" maxlength="40"/>
+          <input class="comment-text-input" type="text" placeholder="Leave a comment…" maxlength="500"/>
+          <button class="comment-submit">Send</button>
+        </div>
+      </div>
+    `;
+    
+    // Delete button handler
+    card.querySelector('.delete-btn').addEventListener('click', () => {
+      openPinModal('delete', id);
+    });
+    
     loadComments(id, card.querySelector(".comments-list"));
+    
     card.querySelector(".comment-submit").addEventListener("click", async () => {
       const nameEl = card.querySelector(".comment-name");
       const textEl = card.querySelector(".comment-text-input");
@@ -544,6 +634,7 @@
         textEl.value = "";
       } catch(e) { alert("Error: " + e.message); }
     });
+    
     return card;
   }
 
@@ -560,4 +651,4 @@
   });
 </script>
 </body>
-  </html>
+</html>

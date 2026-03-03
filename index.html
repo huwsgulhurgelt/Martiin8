@@ -176,6 +176,45 @@
       margin-top: 0.6rem;
     }
 
+    /* Search Bar */
+    .search-container {
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 25px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.88rem;
+      padding: 0.85rem 1.5rem;
+      color: var(--text);
+      outline: none;
+      transition: all 0.2s;
+      box-shadow: 0 2px 12px rgba(232,67,122,0.05);
+    }
+
+    .search-input:focus {
+      border-color: var(--pink);
+      box-shadow: 0 0 0 3px rgba(232,67,122,0.1), 0 4px 16px rgba(232,67,122,0.1);
+    }
+
+    .search-input::placeholder {
+      color: var(--muted);
+      opacity: 0.6;
+    }
+
+    .search-stats {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.6rem;
+      text-align: center;
+    }
+
     .post-form {
       background: white;
       border: 1.5px solid var(--border);
@@ -281,6 +320,15 @@
 
     .post-body { font-size: 0.85rem; line-height: 1.8; color: #5a2035; white-space: pre-wrap; margin-bottom: 1rem; }
 
+    /* Highlight search matches */
+    .highlight {
+      background: rgba(232,67,122,0.2);
+      color: var(--deep);
+      font-weight: 500;
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+
     /* Delete button */
     .delete-btn {
       position: absolute;
@@ -384,6 +432,12 @@
     </div>
   </div>
 
+  <!-- Search Bar -->
+  <div class="search-container">
+    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search posts by title or content...">
+    <div class="search-stats" id="searchStats"></div>
+  </div>
+
   <div class="section-label">ohidiin ners</div>
   <div id="postsContainer">
     <div class="loading">loading…</div>
@@ -427,7 +481,7 @@
     orderBy, query, serverTimestamp, deleteDoc, doc
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const ADMIN_PIN = "4133";
+  const ADMIN_PIN = "8810"; // Updated PIN
 
   const firebaseConfig = {
     apiKey: "AIzaSyBv4e98VudIn6j4ez9QI4O7Gwz12c8NZpY",
@@ -444,8 +498,10 @@
 
   let isAdmin = false;
   let pinEntry = "";
-  let pinAction = null; // 'admin' or 'delete'
+  let pinAction = null;
   let deletePostId = null;
+  let allPosts = [];
+  let searchTerm = "";
   const PIN_LENGTH = ADMIN_PIN.length;
 
   const adminToggle    = document.getElementById("adminToggle");
@@ -462,6 +518,8 @@
   const submitPost     = document.getElementById("submitPost");
   const formMsg        = document.getElementById("formMsg");
   const postsContainer = document.getElementById("postsContainer");
+  const searchInput    = document.getElementById("searchInput");
+  const searchStats    = document.getElementById("searchStats");
 
   function updateDots() {
     const dots = pinDots.querySelectorAll(".pin-dot");
@@ -511,7 +569,6 @@
       if (pinEntry.length === PIN_LENGTH) {
         setTimeout(async () => {
           if (pinEntry === ADMIN_PIN) {
-            // PIN correct
             if (pinAction === 'admin') {
               isAdmin = true;
               closePinModal();
@@ -570,6 +627,82 @@
     submitPost.disabled = false;
   });
 
+  // Search functionality
+  searchInput.addEventListener('input', (e) => {
+    searchTerm = e.target.value.toLowerCase().trim();
+    displayPosts();
+  });
+
+  function calculateRelevance(post, term) {
+    if (!term) return { score: 0, matches: [] };
+    
+    const title = post.title.toLowerCase();
+    const body = post.body.toLowerCase();
+    let score = 0;
+    const matches = [];
+
+    // Exact title match gets highest score
+    if (title === term) score += 100;
+    // Title starts with search term
+    else if (title.startsWith(term)) score += 50;
+    // Title contains search term
+    else if (title.includes(term)) score += 30;
+
+    // Body contains search term
+    if (body.includes(term)) score += 10;
+
+    // Count occurrences
+    const titleMatches = (title.match(new RegExp(term, 'g')) || []).length;
+    const bodyMatches = (body.match(new RegExp(term, 'g')) || []).length;
+    
+    score += titleMatches * 5;
+    score += bodyMatches * 2;
+
+    return { score, titleMatches, bodyMatches };
+  }
+
+  function highlightText(text, term) {
+    if (!term) return escHtml(text);
+    const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return escHtml(text).replace(regex, '<span class="highlight">$1</span>');
+  }
+
+  function displayPosts() {
+    postsContainer.innerHTML = "";
+    
+    if (allPosts.length === 0) {
+      postsContainer.innerHTML = `<div class="empty-state"><div class="big">Nothing yet.</div><small>The author hasn't posted anything.</small></div>`;
+      searchStats.textContent = "";
+      return;
+    }
+
+    let filteredPosts = allPosts;
+
+    // Filter and sort by relevance if searching
+    if (searchTerm) {
+      filteredPosts = allPosts
+        .map(post => ({
+          ...post,
+          relevance: calculateRelevance(post, searchTerm)
+        }))
+        .filter(post => post.relevance.score > 0)
+        .sort((a, b) => b.relevance.score - a.relevance.score);
+
+      searchStats.textContent = `${filteredPosts.length} result${filteredPosts.length !== 1 ? 's' : ''} found`;
+
+      if (filteredPosts.length === 0) {
+        postsContainer.innerHTML = `<div class="empty-state"><div class="big">No matches.</div><small>Try different keywords.</small></div>`;
+        return;
+      }
+    } else {
+      searchStats.textContent = "";
+    }
+
+    filteredPosts.forEach(post => {
+      postsContainer.appendChild(renderPost(post.id, post, searchTerm));
+    });
+  }
+
   function updateDeleteButtons() {
     document.querySelectorAll('.delete-btn').forEach(btn => {
       btn.classList.toggle('show', isAdmin);
@@ -597,14 +730,18 @@
     });
   }
 
-  function renderPost(id, data) {
+  function renderPost(id, data, highlightTerm = "") {
     const card = document.createElement("div");
     card.className = "post-card";
+    
+    const titleHtml = highlightTerm ? highlightText(data.title, highlightTerm) : escHtml(data.title);
+    const bodyHtml = highlightTerm ? highlightText(data.body, highlightTerm) : escHtml(data.body);
+    
     card.innerHTML = `
       <button class="delete-btn ${isAdmin ? 'show' : ''}" data-post-id="${id}">Delete</button>
       <div class="post-meta">${formatDate(data.createdAt)}</div>
-      <div class="post-title">${escHtml(data.title)}</div>
-      <div class="post-body">${escHtml(data.body)}</div>
+      <div class="post-title">${titleHtml}</div>
+      <div class="post-body">${bodyHtml}</div>
       <div class="comments-section">
         <div class="comments-label">♡ Comments</div>
         <div class="comments-list"></div>
@@ -616,7 +753,6 @@
       </div>
     `;
     
-    // Delete button handler
     card.querySelector('.delete-btn').addEventListener('click', () => {
       openPinModal('delete', id);
     });
@@ -640,12 +776,11 @@
 
   const postsQuery = query(collection(db, "posts"), orderBy("createdAt", "desc"));
   onSnapshot(postsQuery, snap => {
-    postsContainer.innerHTML = "";
-    if (snap.empty) {
-      postsContainer.innerHTML = `<div class="empty-state"><div class="big">Nothing yet.</div><small>The author hasn't posted anything.</small></div>`;
-      return;
-    }
-    snap.forEach(d => postsContainer.appendChild(renderPost(d.id, d.data())));
+    allPosts = [];
+    snap.forEach(d => {
+      allPosts.push({ id: d.id, ...d.data() });
+    });
+    displayPosts();
   }, err => {
     postsContainer.innerHTML = `<div class="empty-state"><div class="big">Connection error.</div><small>${err.message}</small></div>`;
   });

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>The Board</title>
+  <title>martiin8</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -176,7 +176,7 @@
       margin-top: 0.6rem;
     }
 
-    /* Search Bar */
+    /* haih heseg */
     .search-container {
       margin-bottom: 2rem;
       position: relative;
@@ -417,7 +417,7 @@
     <div class="site-title">martiin8</div>
     <div class="site-sub">martiin 8 ii mend</div>
   </div>
-  <button class="admin-btn" id="adminToggle">+ Post</button>
+  <button class="admin-btn" id="adminToggle">+ ner bichih</button>
 </header>
 
 <main>
@@ -544,8 +544,8 @@
       modalTitle.textContent = "Admin Access";
       modalDesc.textContent = "pin???.";
     } else if (action === 'delete') {
-      modalTitle.textContent = "Delete Post";
-      modalDesc.textContent = "Enter PIN to delete this post.";
+      modalTitle.textContent = "Delete";
+      modalDesc.textContent = "Enter PIN to dlte.";
     }
     
     updateDots();
@@ -619,7 +619,7 @@
       await addDoc(collection(db, "posts"), { title, body, createdAt: serverTimestamp() });
       postTitle.value = "";
       postBody.value  = "";
-      formMsg.textContent = "✓ done!";
+      formMsg.textContent = "✓!";
       setTimeout(() => formMsg.textContent = "", 2500);
     } catch (err) {
       formMsg.textContent = "Error: " + err.message;

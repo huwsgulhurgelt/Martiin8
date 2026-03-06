@@ -3,458 +3,316 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>martiin8</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <title>martiin8 🌸</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #fff0f5;
-      --surface: #ffe4ef;
-      --deep: #7d1c4a;
+      --gold: #c9a84c;
+      --gold-light: #f0d080;
+      --gold-shine: #ffe9a0;
+      --gold-deep: #a07828;
+      --pink-deep: #b5195e;
       --pink: #e8437a;
-      --rose: #f472a8;
-      --blush: #fbc8dc;
-      --muted: #b0607e;
-      --border: #f0b8d0;
+      --pink-soft: #f8bbd9;
+      --pink-pale: #fff0f7;
+      --pink-bg: #fdeaf4;
       --text: #3a0a20;
+      --muted: #9c4070;
+      --white: #fffdf9;
+      --border: #f0c8dc;
     }
+    @keyframes shimmer {
+      0% { background-position: -400% center; }
+      100% { background-position: 400% center; }
+    }
+    @keyframes float1 { 0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-18px) rotate(6deg);} }
+    @keyframes float2 { 0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-12px) rotate(-4deg);} }
+    @keyframes float3 { 0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-22px) scale(1.07);} }
+    @keyframes popIn { from{opacity:0;transform:scale(0.88) translateY(14px);}to{opacity:1;transform:scale(1) translateY(0);} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);} }
+    @keyframes pulse-gold { 0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.4);}50%{box-shadow:0 0 0 8px rgba(201,168,76,0);} }
+    @keyframes sway { 0%,100%{transform:rotate(-3deg);}50%{transform:rotate(3deg);} }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Mono', monospace;
-      min-height: 100vh;
-      background-image: radial-gradient(circle at 20% 0%, #ffd6e880 0%, transparent 50%),
-                        radial-gradient(circle at 80% 100%, #ffc0d880 0%, transparent 50%);
+    body { background: var(--pink-bg); color: var(--text); font-family: 'Nunito', sans-serif; min-height: 100vh; overflow-x: hidden; position: relative; }
+
+    .flower-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .flower-bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 10% 10%, #ffd6ec88 0%, transparent 45%),
+        radial-gradient(ellipse at 90% 5%,  #ffe9a055 0%, transparent 40%),
+        radial-gradient(ellipse at 50% 50%, #fff0f788 0%, transparent 60%),
+        radial-gradient(ellipse at 0% 90%,  #ffc0d866 0%, transparent 40%),
+        radial-gradient(ellipse at 100% 80%,#ffe08055 0%, transparent 40%);
+    }
+    .bg-flower { position: absolute; opacity: 0.18; user-select: none; }
+    .bg-flower:nth-child(1)  { top:3%;left:2%;font-size:3.5rem;animation:float1 6s ease-in-out infinite; }
+    .bg-flower:nth-child(2)  { top:8%;left:15%;font-size:1.8rem;animation:float2 7s ease-in-out infinite 1s; }
+    .bg-flower:nth-child(3)  { top:2%;left:30%;font-size:2.5rem;animation:float3 8s ease-in-out infinite 0.5s; }
+    .bg-flower:nth-child(4)  { top:5%;left:50%;font-size:2rem;animation:float1 5s ease-in-out infinite 2s; }
+    .bg-flower:nth-child(5)  { top:1%;left:70%;font-size:3rem;animation:float2 9s ease-in-out infinite 1.5s; }
+    .bg-flower:nth-child(6)  { top:7%;left:85%;font-size:2rem;animation:float3 6s ease-in-out infinite 0.8s; }
+    .bg-flower:nth-child(7)  { top:3%;left:96%;font-size:2.8rem;animation:float1 7s ease-in-out infinite 3s; }
+    .bg-flower:nth-child(8)  { top:15%;left:0%;font-size:2.2rem;animation:float2 8s ease-in-out infinite 0.3s; }
+    .bg-flower:nth-child(9)  { top:20%;left:96%;font-size:1.9rem;animation:float3 6s ease-in-out infinite 2.5s; }
+    .bg-flower:nth-child(10) { top:35%;left:2%;font-size:3rem;animation:float1 9s ease-in-out infinite 1s; }
+    .bg-flower:nth-child(11) { top:35%;left:97%;font-size:2.5rem;animation:float2 7s ease-in-out infinite 0.5s; }
+    .bg-flower:nth-child(12) { top:50%;left:0%;font-size:2rem;animation:float3 8s ease-in-out infinite 1.8s; }
+    .bg-flower:nth-child(13) { top:50%;left:95%;font-size:2.5rem;animation:float1 6s ease-in-out infinite 2s; }
+    .bg-flower:nth-child(14) { top:65%;left:1%;font-size:3rem;animation:float2 9s ease-in-out infinite 0.7s; }
+    .bg-flower:nth-child(15) { top:65%;left:96%;font-size:2.2rem;animation:float3 7s ease-in-out infinite 1.2s; }
+    .bg-flower:nth-child(16) { top:80%;left:3%;font-size:2.5rem;animation:float1 8s ease-in-out infinite 0.4s; }
+    .bg-flower:nth-child(17) { top:80%;left:94%;font-size:1.8rem;animation:float2 6s ease-in-out infinite 2.2s; }
+    .bg-flower:nth-child(18) { top:92%;left:10%;font-size:3rem;animation:float3 7s ease-in-out infinite 1s; }
+    .bg-flower:nth-child(19) { top:90%;left:50%;font-size:2rem;animation:float1 9s ease-in-out infinite 0.6s; }
+    .bg-flower:nth-child(20) { top:93%;left:85%;font-size:2.8rem;animation:float2 8s ease-in-out infinite 1.4s; }
+
+    .gold-stripe {
+      height: 5px;
+      background: linear-gradient(90deg, var(--pink-deep),var(--gold),var(--gold-shine),var(--gold),var(--pink-deep),var(--gold),var(--gold-shine),var(--gold),var(--pink-deep));
+      background-size: 200% auto;
+      animation: shimmer 3s linear infinite;
+      position: relative; z-index: 10;
     }
 
     header {
-      background: linear-gradient(135deg, var(--deep) 0%, #b5275f 100%);
-      color: #fff0f5;
-      padding: 1.8rem 2rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 3px solid var(--rose);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 4px 24px rgba(125,28,74,0.25);
+      background: linear-gradient(135deg, #7d0a3a 0%, #b5195e 40%, #8b1245 70%, #5a0828 100%);
+      padding: 1.6rem 2rem 1.4rem;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 4px 30px rgba(125,10,58,0.4);
+      border-bottom: 2px solid var(--gold);
+      overflow: hidden;
     }
+    header::before {
+      content: '🌸🌺🌸🌺🌸🌺🌸🌺🌸🌺🌸🌺🌸🌺🌸🌺🌸🌺🌸🌺🌸🌺🌸';
+      position: absolute; bottom: 0; left: 0;
+      font-size: 0.85rem; opacity: 0.18; letter-spacing: 0.3rem; white-space: nowrap;
+    }
+    .header-left { position: relative; z-index: 1; }
+    .site-title { font-family: 'Playfair Display', serif; font-size: clamp(1.9rem,5vw,2.9rem); font-style: italic; color: var(--white); text-shadow: 0 2px 8px rgba(0,0,0,0.3); letter-spacing: 0.03em; line-height: 1; }
+    .site-title span {
+      background: linear-gradient(90deg, var(--gold-shine),var(--gold),var(--gold-light),var(--gold-shine));
+      background-size: 300% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      animation: shimmer 3s linear infinite;
+    }
+    .site-sub { font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--pink-soft); margin-top: 0.25rem; }
+    .header-flowers { position: absolute; right: 140px; top: 50%; transform: translateY(-50%); font-size: 1.4rem; opacity: 0.55; pointer-events: none; letter-spacing: 0.3rem; z-index: 1; }
+    .admin-btn { background: transparent; border: 1.5px solid var(--gold); color: var(--gold-light); font-family: 'Nunito',sans-serif; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; padding: 0.6rem 1.3rem; cursor: pointer; transition: all 0.2s; border-radius: 30px; position: relative; z-index: 1; }
+    .admin-btn:hover, .admin-btn.active { background: linear-gradient(135deg,var(--gold),var(--gold-deep)); color: #3a0a20; border-color: var(--gold); box-shadow: 0 0 16px rgba(201,168,76,0.5); }
+    .gold-stripe-bottom { height: 3px; background: linear-gradient(90deg,transparent,var(--gold),var(--gold-shine),var(--gold),transparent); background-size: 200% auto; animation: shimmer 2.5s linear infinite; }
 
-    .site-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.8rem, 5vw, 2.8rem);
-      letter-spacing: 0.02em;
-      line-height: 1;
-    }
-
-    .site-sub {
-      font-size: 0.6rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--blush);
-      margin-top: 0.2rem;
-    }
-
-    .admin-btn {
-      background: transparent;
-      border: 1.5px solid var(--rose);
-      color: #fff0f5;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 0.55rem 1.2rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      border-radius: 2px;
-    }
-    .admin-btn:hover, .admin-btn.active { background: var(--rose); border-color: var(--rose); color: var(--deep); }
-
-    main {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 2.5rem 1.5rem;
-    }
-
-    .overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(58,10,32,0.75);
-      backdrop-filter: blur(4px);
-      z-index: 200;
-      align-items: center;
-      justify-content: center;
-    }
-    .overlay.show { display: flex; }
-
-    .modal {
-      background: var(--bg);
-      border: 2px solid var(--border);
-      border-top: 4px solid var(--pink);
-      padding: 2.5rem;
-      width: min(400px, 92vw);
-      position: relative;
-      box-shadow: 0 20px 60px rgba(125,28,74,0.3);
-      border-radius: 4px;
-      animation: popIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
-    }
-
-    @keyframes popIn {
-      from { opacity: 0; transform: scale(0.9) translateY(10px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    .modal h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.7rem;
-      color: var(--deep);
-      margin-bottom: 0.3rem;
-    }
-    .modal p { font-size: 0.72rem; color: var(--muted); margin-bottom: 1.5rem; }
-
-    .pin-dots {
-      display: flex;
-      gap: 0.8rem;
-      margin-bottom: 1.5rem;
-      justify-content: center;
-    }
-
-    .pin-dot {
-      width: 13px;
-      height: 13px;
-      border-radius: 50%;
-      border: 2px solid var(--border);
-      background: transparent;
-      transition: all 0.15s;
-    }
-    .pin-dot.filled { background: var(--pink); border-color: var(--pink); }
-    .pin-dot.error { border-color: #c0392b; background: #c0392b; }
-
-    .numpad {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.5rem;
-    }
-
-    .numpad-btn {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      font-family: 'DM Mono', monospace;
-      font-size: 1.1rem;
-      padding: 0.9rem;
-      cursor: pointer;
-      transition: all 0.12s;
-      color: var(--deep);
-      border-radius: 3px;
-    }
-    .numpad-btn:hover { background: var(--pink); color: white; border-color: var(--pink); }
-    .numpad-btn:active { transform: scale(0.95); }
-    .numpad-btn.del { font-size: 0.75rem; letter-spacing: 0.05em; }
-    .numpad-btn.empty { visibility: hidden; }
-
-    .modal-close {
-      position: absolute;
-      top: 1rem; right: 1rem;
-      background: none;
-      border: none;
-      font-size: 1.4rem;
-      cursor: pointer;
-      color: var(--muted);
-      line-height: 1;
-    }
-    .modal-close:hover { color: var(--pink); }
-
-    .pin-error {
-      font-size: 0.7rem;
-      color: #c0392b;
-      text-align: center;
-      min-height: 1rem;
-      margin-top: 0.6rem;
-    }
-
-    /* haih heseg */
-    .search-container {
-      margin-bottom: 2rem;
-      position: relative;
-    }
-
-    .search-input {
-      width: 100%;
-      background: white;
-      border: 2px solid var(--border);
-      border-radius: 25px;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.88rem;
-      padding: 0.85rem 1.5rem;
-      color: var(--text);
-      outline: none;
-      transition: all 0.2s;
-      box-shadow: 0 2px 12px rgba(232,67,122,0.05);
-    }
-
-    .search-input:focus {
-      border-color: var(--pink);
-      box-shadow: 0 0 0 3px rgba(232,67,122,0.1), 0 4px 16px rgba(232,67,122,0.1);
-    }
-
-    .search-input::placeholder {
-      color: var(--muted);
-      opacity: 0.6;
-    }
-
-    .search-stats {
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-top: 0.6rem;
-      text-align: center;
-    }
+    main { max-width: 780px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; position: relative; z-index: 1; }
 
     .post-form {
-      background: white;
-      border: 1.5px solid var(--border);
-      border-top: 3px solid var(--pink);
-      padding: 1.5rem;
-      margin-bottom: 3rem;
-      display: none;
-      box-shadow: 0 4px 20px rgba(232,67,122,0.1);
-      border-radius: 4px;
-      animation: slideDown 0.3s ease;
+      background: linear-gradient(135deg,#fff8fd,#fff0f7);
+      border: 1.5px solid var(--gold); border-top: 4px solid var(--gold);
+      padding: 1.8rem; margin-bottom: 2.5rem; display: none;
+      box-shadow: 0 8px 32px rgba(201,168,76,0.15), 0 2px 8px rgba(232,67,122,0.1);
+      border-radius: 16px; animation: popIn 0.3s ease; position: relative; overflow: hidden;
     }
+    .post-form::before { content:'🌸'; position:absolute; top:0.8rem; right:1rem; font-size:1.4rem; opacity:0.4; animation:sway 3s ease-in-out infinite; }
     .post-form.show { display: block; }
+    .form-title { font-family:'Playfair Display',serif; font-size:1.25rem; color:var(--pink-deep); margin-bottom:1.2rem; display:flex; align-items:center; gap:0.5rem; }
+    .post-form label { display:block; font-size:0.62rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold-deep); font-weight:700; margin-bottom:0.4rem; }
+    .post-form input, .post-form textarea { width:100%; background:white; border:1.5px solid var(--border); font-family:'Nunito',sans-serif; font-size:0.9rem; padding:0.75rem 1rem; color:var(--text); resize:vertical; margin-bottom:1rem; outline:none; transition:all 0.2s; border-radius:10px; }
+    .post-form input:focus, .post-form textarea:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,0.15); }
+    .post-form textarea { min-height:130px; }
+    .form-row { display:flex; gap:1rem; justify-content:space-between; align-items:center; flex-wrap:wrap; }
+    .form-msg { font-size:0.72rem; color:var(--muted); }
 
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+    .gold-btn {
+      background: linear-gradient(90deg,var(--gold-light),var(--gold),var(--gold-shine),var(--gold),var(--gold-light));
+      background-size: 300% auto;
+      color: #3a0a20; border: none; font-family:'Nunito',sans-serif; font-size:0.75rem; font-weight:700;
+      letter-spacing:0.12em; text-transform:uppercase; padding:0.75rem 1.8rem;
+      cursor:pointer; transition:all 0.2s; border-radius:30px;
+      animation: shimmer 3s linear infinite;
+      box-shadow: 0 4px 14px rgba(201,168,76,0.35);
     }
+    .gold-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(201,168,76,0.5); }
+    .gold-btn:active { transform:scale(0.97); }
+    .gold-btn:disabled { opacity:0.45; cursor:not-allowed; transform:none; }
 
-    .post-form label {
-      display: block;
-      font-size: 0.6rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.4rem;
-    }
+    .search-container { margin-bottom:2rem; position:relative; }
+    .search-wrap { position:relative; display:flex; align-items:center; }
+    .search-icon { position:absolute; left:1.1rem; font-size:1rem; pointer-events:none; }
+    .search-input { width:100%; background:white; border:2px solid var(--border); border-radius:30px; font-family:'Nunito',sans-serif; font-size:0.9rem; padding:0.85rem 1.5rem 0.85rem 2.8rem; color:var(--text); outline:none; transition:all 0.2s; box-shadow:0 4px 16px rgba(232,67,122,0.06); }
+    .search-input:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,0.15); }
+    .search-stats { font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-top:0.6rem; text-align:center; }
 
-    .post-form input,
-    .post-form textarea {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      font-family: 'DM Mono', monospace;
-      font-size: 0.88rem;
-      padding: 0.75rem;
-      color: var(--text);
-      resize: vertical;
-      margin-bottom: 1rem;
-      outline: none;
-      transition: border-color 0.2s;
-      border-radius: 3px;
-    }
-    .post-form input:focus,
-    .post-form textarea:focus { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(232,67,122,0.1); }
-    .post-form textarea { min-height: 130px; }
+    .section-label { display:flex; align-items:center; gap:0.75rem; margin-bottom:2rem; }
+    .section-label-text { font-size:0.6rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold-deep); font-weight:700; white-space:nowrap; }
+    .section-label-line { flex:1; height:1px; background:linear-gradient(90deg,var(--gold),transparent); }
+    .section-label-flower { font-size:1rem; animation:sway 4s ease-in-out infinite; }
 
-    .submit-btn {
-      background: linear-gradient(135deg, var(--pink), var(--deep));
-      color: white;
-      border: none;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.72rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      padding: 0.8rem 1.8rem;
-      cursor: pointer;
-      transition: opacity 0.2s, transform 0.1s;
-      border-radius: 3px;
-    }
-    .submit-btn:hover { opacity: 0.88; }
-    .submit-btn:active { transform: scale(0.98); }
-    .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    .form-row { display: flex; gap: 1rem; justify-content: space-between; align-items: center; }
-    .form-msg { font-size: 0.7rem; color: var(--muted); }
-
-    .section-label {
-      font-size: 0.6rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--muted);
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 0.5rem;
-      margin-bottom: 2rem;
-    }
+    .reorder-hint { display:none; text-align:center; font-size:0.68rem; letter-spacing:0.1em; color:var(--gold-deep); background:linear-gradient(135deg,#fff8e8,#fff0f7); border:1px dashed var(--gold); border-radius:10px; padding:0.6rem 1rem; margin-bottom:1.5rem; animation:pulse-gold 2s infinite; }
+    .reorder-hint.show { display:block; }
 
     .post-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--rose);
-      padding: 1.5rem 1.5rem 1.2rem;
-      margin-bottom: 2rem;
-      border-radius: 0 4px 4px 0;
-      box-shadow: 0 2px 12px rgba(232,67,122,0.07);
-      animation: fadeIn 0.4s ease;
-      position: relative;
+      background: linear-gradient(160deg,#fffdf9 60%,#fff5fb 100%);
+      border: 1.5px solid var(--border); border-radius:20px;
+      padding: 1.6rem 1.6rem 1.3rem; margin-bottom:2rem;
+      box-shadow: 0 6px 24px rgba(232,67,122,0.08), 0 2px 6px rgba(201,168,76,0.08);
+      animation: fadeUp 0.4s ease; position:relative; overflow:hidden; transition:box-shadow 0.2s,transform 0.2s;
     }
+    .post-card::before { content:''; position:absolute; top:0;left:0;right:0;height:4px; background:linear-gradient(90deg,var(--pink),var(--gold),var(--gold-shine),var(--gold),var(--pink)); background-size:200% auto; animation:shimmer 4s linear infinite; border-radius:20px 20px 0 0; }
+    .post-card::after { content:'🌸'; position:absolute; bottom:0.8rem;right:1rem; font-size:1.5rem; opacity:0.12; pointer-events:none; }
+    .post-card:hover { box-shadow:0 10px 36px rgba(232,67,122,0.14), 0 4px 12px rgba(201,168,76,0.12); transform:translateY(-2px); }
+    .post-card.draggable { cursor:grab; }
+    .post-card.draggable:active { cursor:grabbing; }
+    .post-card.drag-over { border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,168,76,0.3); transform:scale(1.01); }
+    .post-card.dragging { opacity:0.5; transform:scale(0.98); }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    .drag-handle { display:none; position:absolute; left:0.7rem; top:50%; transform:translateY(-50%); flex-direction:column; gap:3px; align-items:center; cursor:grab; opacity:0.6; padding:0.3rem; }
+    .drag-handle.show { display:flex; }
+    .drag-handle span { display:block; width:18px; height:2.5px; background:var(--gold); border-radius:2px; }
+    .post-card.draggable { padding-left:2.6rem; }
 
-    .post-meta { font-size: 0.62rem; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+    .post-meta { font-size:0.62rem; color:var(--muted); letter-spacing:0.07em; margin-bottom:0.5rem; }
+    .post-title { font-family:'Playfair Display',serif; font-size:1.55rem; line-height:1.25; color:var(--pink-deep); margin-bottom:0.7rem; }
+    .post-body { font-size:0.88rem; line-height:1.85; color:#5a2035; white-space:pre-wrap; margin-bottom:1rem; }
+    .highlight { background:linear-gradient(120deg,rgba(201,168,76,0.25),rgba(232,67,122,0.2)); color:var(--pink-deep); font-weight:600; padding:0 3px; border-radius:3px; }
 
-    .post-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.55rem;
-      line-height: 1.25;
-      color: var(--deep);
-      margin-bottom: 0.6rem;
-    }
+    .admin-actions { position:absolute; top:1rem; right:1rem; display:none; gap:0.4rem; }
+    .admin-actions.show { display:flex; }
+    .action-btn { background:white; border:1.5px solid var(--border); color:var(--muted); font-family:'Nunito',sans-serif; font-size:0.62rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:0.35rem 0.75rem; cursor:pointer; transition:all 0.15s; border-radius:20px; }
+    .action-btn.edit-btn:hover { background:var(--gold-light); border-color:var(--gold); color:var(--gold-deep); }
+    .action-btn.delete-btn:hover { background:#ffe0e0; border-color:#e07070; color:#b00020; }
 
-    .post-body { font-size: 0.85rem; line-height: 1.8; color: #5a2035; white-space: pre-wrap; margin-bottom: 1rem; }
+    .edit-area { display:none; flex-direction:column; gap:0.6rem; margin-bottom:1rem; }
+    .edit-area.show { display:flex; }
+    .edit-area input, .edit-area textarea { width:100%; background:#fff8fd; border:1.5px solid var(--gold); font-family:'Nunito',sans-serif; font-size:0.9rem; padding:0.65rem 0.9rem; color:var(--text); outline:none; border-radius:10px; resize:vertical; }
+    .edit-area textarea { min-height:100px; }
+    .edit-save-btn { align-self:flex-start; background:linear-gradient(135deg,var(--gold-light),var(--gold)); color:#3a0a20; border:none; font-family:'Nunito',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; padding:0.55rem 1.3rem; cursor:pointer; border-radius:20px; transition:all 0.15s; box-shadow:0 3px 10px rgba(201,168,76,0.3); }
+    .edit-save-btn:hover { transform:translateY(-1px); box-shadow:0 5px 15px rgba(201,168,76,0.45); }
 
-    /* Highlight search matches */
-    .highlight {
-      background: rgba(232,67,122,0.2);
-      color: var(--deep);
-      font-weight: 500;
-      padding: 0 2px;
-      border-radius: 2px;
-    }
+    .comments-section { margin-top:1rem; padding-top:0.9rem; border-top:1px dashed rgba(201,168,76,0.4); }
+    .comments-label { font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:0.75rem; cursor:pointer; user-select:none; font-weight:700; }
+    .comments-label:hover { color:var(--pink); }
 
-    /* Delete button */
-    .delete-btn {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-family: 'DM Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 0.4rem 0.8rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      border-radius: 3px;
-      display: none;
-    }
-    .delete-btn.show { display: block; }
-    .delete-btn:hover { background: #c0392b; color: white; border-color: #c0392b; }
+    .comment-item { padding:0.55rem 0.6rem; border-bottom:1px solid rgba(240,184,208,0.4); font-size:0.8rem; animation:fadeUp 0.3s ease; position:relative; border-radius:6px; transition:background 0.15s; }
+    .comment-item:hover { background:rgba(255,240,247,0.7); }
+    .comment-item:last-child { border-bottom:none; }
+    .comment-author { font-weight:700; color:var(--pink-deep); margin-right:0.4rem; }
+    .comment-time { font-size:0.58rem; color:var(--muted); }
+    .comment-text-display { margin-top:0.2rem; line-height:1.55; color:#5a2035; }
 
-    .comments-section { margin-top: 1rem; padding-top: 0.9rem; border-top: 1px dashed var(--border); }
+    .comment-admin-btns { display:none; position:absolute; top:0.5rem; right:0.4rem; gap:0.3rem; }
+    .comment-admin-btns.show { display:flex; }
+    .comment-mini-btn { background:white; border:1px solid var(--border); color:var(--muted); font-size:0.58rem; font-family:'Nunito',sans-serif; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:0.25rem 0.55rem; cursor:pointer; border-radius:10px; transition:all 0.13s; }
+    .comment-mini-btn.edit:hover { background:#fff8e0; border-color:var(--gold); color:var(--gold-deep); }
+    .comment-mini-btn.del:hover { background:#ffe0e0; border-color:#e07070; color:#b00020; }
 
-    .comments-label {
-      font-size: 0.58rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.75rem;
-      cursor: pointer;
-      user-select: none;
-    }
-    .comments-label:hover { color: var(--pink); }
+    .comment-edit-area { display:none; gap:0.4rem; margin-top:0.4rem; align-items:center; }
+    .comment-edit-area.show { display:flex; }
+    .comment-edit-input { flex:1; background:#fff8fd; border:1.5px solid var(--gold); font-family:'Nunito',sans-serif; font-size:0.8rem; padding:0.4rem 0.7rem; color:var(--text); outline:none; border-radius:8px; }
+    .comment-edit-save { background:linear-gradient(135deg,var(--gold-light),var(--gold)); color:#3a0a20; border:none; font-family:'Nunito',sans-serif; font-size:0.62rem; font-weight:700; padding:0.4rem 0.9rem; cursor:pointer; border-radius:12px; transition:all 0.13s; white-space:nowrap; }
+    .comment-edit-save:hover { transform:translateY(-1px); }
 
-    .comment-item { padding: 0.55rem 0; border-bottom: 1px solid rgba(240,184,208,0.5); font-size: 0.78rem; animation: fadeIn 0.3s ease; }
-    .comment-item:last-child { border-bottom: none; }
-    .comment-author { font-weight: 500; color: var(--deep); margin-right: 0.5rem; }
-    .comment-time { font-size: 0.58rem; color: var(--muted); }
-    .comment-text { margin-top: 0.2rem; line-height: 1.5; color: #5a2035; }
+    .comment-form { display:flex; gap:0.5rem; margin-top:0.75rem; flex-wrap:wrap; }
+    .comment-form input { background:white; border:1.5px solid var(--border); font-family:'Nunito',sans-serif; font-size:0.78rem; padding:0.5rem 0.8rem; color:var(--text); outline:none; transition:all 0.2s; border-radius:20px; }
+    .comment-form input:focus { border-color:var(--gold); box-shadow:0 0 0 2px rgba(201,168,76,0.13); }
+    .comment-name { width:130px; flex-shrink:0; }
+    .comment-text-input { flex:1; min-width:150px; }
+    .comment-submit { background:linear-gradient(135deg,#f8bbd9,var(--pink)); color:white; border:none; font-family:'Nunito',sans-serif; font-size:0.65rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:0.5rem 1.1rem; cursor:pointer; flex-shrink:0; transition:all 0.15s; border-radius:20px; box-shadow:0 3px 10px rgba(232,67,122,0.25); }
+    .comment-submit:hover { transform:translateY(-1px); box-shadow:0 5px 14px rgba(232,67,122,0.35); }
 
-    .comment-form { display: flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; }
+    .empty-state { text-align:center; padding:5rem 2rem; color:var(--muted); }
+    .empty-state .big { font-family:'Playfair Display',serif; font-size:2.2rem; font-style:italic; color:var(--pink); margin-bottom:0.5rem; }
+    .empty-state small { font-size:0.68rem; letter-spacing:0.1em; }
+    .loading { text-align:center; padding:3rem; font-size:0.85rem; color:var(--muted); letter-spacing:0.1em; }
 
-    .comment-form input {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      font-family: 'DM Mono', monospace;
-      font-size: 0.76rem;
-      padding: 0.5rem 0.75rem;
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.2s;
-      flex-shrink: 0;
-      border-radius: 3px;
-    }
-    .comment-form input:focus { border-color: var(--pink); }
-    .comment-name { width: 130px; }
-    .comment-text-input { flex: 1; min-width: 150px; }
+    .overlay { display:none; position:fixed; inset:0; background:rgba(58,10,32,0.72); backdrop-filter:blur(6px); z-index:200; align-items:center; justify-content:center; }
+    .overlay.show { display:flex; }
+    .modal { background:linear-gradient(160deg,#fffdf9,#fff5fb); border:2px solid var(--gold); border-top:5px solid var(--gold); padding:2.5rem; width:min(400px,92vw); position:relative; box-shadow:0 24px 64px rgba(125,28,74,0.35); border-radius:20px; animation:popIn 0.28s cubic-bezier(0.34,1.56,0.64,1); overflow:hidden; }
+    .modal::before { content:'🌸🌺🌼🌸🌺🌼🌸🌺🌼🌸'; position:absolute; top:0.5rem; left:0; right:0; text-align:center; font-size:0.9rem; opacity:0.25; letter-spacing:0.3rem; }
+    .modal h2 { font-family:'Playfair Display',serif; font-size:1.75rem; color:var(--pink-deep); margin-bottom:0.3rem; margin-top:0.5rem; }
+    .modal p { font-size:0.74rem; color:var(--muted); margin-bottom:1.5rem; }
+    .pin-dots { display:flex; gap:0.9rem; margin-bottom:1.5rem; justify-content:center; }
+    .pin-dot { width:14px; height:14px; border-radius:50%; border:2px solid var(--border); background:transparent; transition:all 0.15s; }
+    .pin-dot.filled { background:var(--gold); border-color:var(--gold); box-shadow:0 0 8px rgba(201,168,76,0.5); }
+    .pin-dot.error  { border-color:#c0392b; background:#c0392b; }
+    .numpad { display:grid; grid-template-columns:repeat(3,1fr); gap:0.55rem; }
+    .numpad-btn { background:white; border:1.5px solid var(--border); font-family:'Nunito',sans-serif; font-size:1.15rem; font-weight:600; padding:0.9rem; cursor:pointer; transition:all 0.12s; color:var(--text); border-radius:12px; }
+    .numpad-btn:hover { background:var(--gold-light); border-color:var(--gold); color:var(--gold-deep); }
+    .numpad-btn:active { transform:scale(0.93); }
+    .numpad-btn.del { font-size:0.75rem; letter-spacing:0.05em; }
+    .numpad-btn.empty { visibility:hidden; }
+    .modal-close { position:absolute; top:1rem; right:1rem; background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--muted); line-height:1; z-index:1; }
+    .modal-close:hover { color:var(--pink); }
+    .pin-error { font-size:0.72rem; color:#c0392b; text-align:center; min-height:1rem; margin-top:0.6rem; }
 
-    .comment-submit {
-      background: var(--surface);
-      color: var(--deep);
-      border: 1px solid var(--border);
-      font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: all 0.15s;
-      border-radius: 3px;
-    }
-    .comment-submit:hover { background: var(--pink); color: white; border-color: var(--pink); }
-
-    .empty-state { text-align: center; padding: 5rem 2rem; color: var(--muted); }
-    .empty-state .big { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-style: italic; color: var(--rose); margin-bottom: 0.5rem; }
-    .empty-state small { font-size: 0.68rem; letter-spacing: 0.1em; }
-
-    .loading { text-align: center; padding: 3rem; font-size: 0.72rem; letter-spacing: 0.15em; color: var(--muted); }
+    @media(max-width:520px) { .header-flowers { display:none; } .post-card { padding:1.3rem 1.2rem 1.1rem; } }
   </style>
 </head>
 <body>
 
+<div class="flower-bg">
+  <div class="bg-flower">🌸</div><div class="bg-flower">🌺</div><div class="bg-flower">🌼</div>
+  <div class="bg-flower">🌸</div><div class="bg-flower">🌹</div><div class="bg-flower">🌺</div>
+  <div class="bg-flower">🌸</div><div class="bg-flower">🌼</div><div class="bg-flower">🌸</div>
+  <div class="bg-flower">🌺</div><div class="bg-flower">🌸</div><div class="bg-flower">🌹</div>
+  <div class="bg-flower">🌸</div><div class="bg-flower">🌺</div><div class="bg-flower">🌼</div>
+  <div class="bg-flower">🌸</div><div class="bg-flower">🌺</div><div class="bg-flower">🌸</div>
+  <div class="bg-flower">🌹</div><div class="bg-flower">🌸</div>
+</div>
+
+<div class="gold-stripe"></div>
 <header>
-  <div>
-    <div class="site-title">martiin8</div>
-    <div class="site-sub">martiin 8 ii mend</div>
+  <div class="header-left">
+    <div class="site-title">✦ <span>martiin8</span> ✦</div>
+    <div class="site-sub">🌸 martiin 8 ii mend 🌸</div>
   </div>
-  <button class="admin-btn" id="adminToggle">+ ner bichih</button>
+  <div class="header-flowers">🌸🌺🌼🌹🌸</div>
+  <button class="admin-btn" id="adminToggle">✦ ner bichih</button>
 </header>
+<div class="gold-stripe-bottom"></div>
 
 <main>
   <div class="post-form" id="postForm">
+    <div class="form-title">🌸 Shine post</div>
     <label>Title</label>
     <input type="text" id="postTitle" placeholder="ner bichne uu" maxlength="120"/>
     <label>Body</label>
     <textarea id="postBody" placeholder="ium bicheerei"></textarea>
     <div class="form-row">
-      <button class="submit-btn" id="submitPost">Publish →</button>
+      <button class="gold-btn" id="submitPost">Publish ✦</button>
       <span class="form-msg" id="formMsg"></span>
     </div>
   </div>
 
-  <!-- Search Bar -->
   <div class="search-container">
-    <input type="text" id="searchInput" class="search-input" placeholder="🔍 нэрээ хайж болно">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" class="search-input" placeholder="нэрээ хайж болно…">
+    </div>
     <div class="search-stats" id="searchStats"></div>
   </div>
 
-  <div class="section-label">ohidiin ners</div>
-  <div id="postsContainer">
-    <div class="loading">loading…</div>
+  <div class="reorder-hint" id="reorderHint">✦ Drag &amp; drop posts to reorder them — teacher goes first! ✦</div>
+
+  <div class="section-label">
+    <span class="section-label-flower">🌸</span>
+    <span class="section-label-text">ohidiin ners</span>
+    <div class="section-label-line"></div>
+    <span class="section-label-flower">🌺</span>
   </div>
+
+  <div id="postsContainer"><div class="loading">🌸 loading… 🌸</div></div>
 </main>
 
-<!-- PIN Overlay for Admin/Delete -->
 <div class="overlay" id="pinOverlay">
   <div class="modal">
     <button class="modal-close" id="modalClose">&times;</button>
     <h2 id="modalTitle">Admin Access</h2>
     <p id="modalDesc">pin???.</p>
     <div class="pin-dots" id="pinDots">
-      <div class="pin-dot"></div>
-      <div class="pin-dot"></div>
-      <div class="pin-dot"></div>
-      <div class="pin-dot"></div>
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+      <div class="pin-dot"></div><div class="pin-dot"></div>
     </div>
     <div class="numpad">
       <button class="numpad-btn" data-n="1">1</button>
@@ -478,30 +336,25 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import {
     getFirestore, collection, addDoc, onSnapshot,
-    orderBy, query, serverTimestamp, deleteDoc, doc
+    orderBy, query, serverTimestamp, deleteDoc, doc, updateDoc
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const ADMIN_PIN = "8810"; // Updated PIN
-
+  const ADMIN_PIN = "8810";
   const firebaseConfig = {
     apiKey: "AIzaSyBv4e98VudIn6j4ez9QI4O7Gwz12c8NZpY",
     authDomain: "martin8-6583c.firebaseapp.com",
     projectId: "martin8-6583c",
     storageBucket: "martin8-6583c.firebasestorage.app",
     messagingSenderId: "640451919435",
-    appId: "1:640451919435:web:52cdb18b47edd13ac657fe",
-    measurementId: "G-GY33YYNFBB"
+    appId: "1:640451919435:web:52cdb18b47edd13ac657fe"
   };
 
   const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+  const db  = getFirestore(app);
 
-  let isAdmin = false;
-  let pinEntry = "";
-  let pinAction = null;
-  let deletePostId = null;
-  let allPosts = [];
-  let searchTerm = "";
+  let isAdmin = false, pinEntry = "", pinAction = null, deletePostId = null;
+  let allPosts = [], searchTerm = "";
+  let customOrder = JSON.parse(localStorage.getItem('postsOrder') || '[]');
   const PIN_LENGTH = ADMIN_PIN.length;
 
   const adminToggle    = document.getElementById("adminToggle");
@@ -520,43 +373,28 @@
   const postsContainer = document.getElementById("postsContainer");
   const searchInput    = document.getElementById("searchInput");
   const searchStats    = document.getElementById("searchStats");
+  const reorderHint    = document.getElementById("reorderHint");
 
   function updateDots() {
-    const dots = pinDots.querySelectorAll(".pin-dot");
-    dots.forEach((d, i) => { d.classList.toggle("filled", i < pinEntry.length); d.classList.remove("error"); });
+    pinDots.querySelectorAll(".pin-dot").forEach((d,i) => { d.classList.toggle("filled", i < pinEntry.length); d.classList.remove("error"); });
     pinError.textContent = "";
   }
-
   function shakeError() {
-    const dots = pinDots.querySelectorAll(".pin-dot");
-    dots.forEach(d => d.classList.add("error"));
-    pinError.textContent = "chi ashid bish.";
+    pinDots.querySelectorAll(".pin-dot").forEach(d => d.classList.add("error"));
+    pinError.textContent = "chi ashid bish. 🌸";
     pinEntry = "";
-    setTimeout(() => { dots.forEach(d => d.classList.remove("error")); updateDots(); }, 900);
+    setTimeout(() => { pinDots.querySelectorAll(".pin-dot").forEach(d => d.classList.remove("error")); updateDots(); }, 900);
   }
-
   function openPinModal(action, postId = null) {
-    pinAction = action;
-    deletePostId = postId;
-    pinEntry = "";
-    
-    if (action === 'admin') {
-      modalTitle.textContent = "Admin Access";
-      modalDesc.textContent = "pin???.";
-    } else if (action === 'delete') {
-      modalTitle.textContent = "Delete";
-      modalDesc.textContent = "Enter PIN to dlte.";
-    }
-    
+    pinAction = action; deletePostId = postId; pinEntry = "";
+    modalTitle.textContent = action === 'admin' ? "Admin Access 🌸" : "Delete ✦";
+    modalDesc.textContent  = action === 'admin' ? "pin???." : "Enter PIN to delete.";
     updateDots();
     pinOverlay.classList.add("show");
   }
-
   function closePinModal() {
     pinOverlay.classList.remove("show");
-    pinEntry = "";
-    pinAction = null;
-    deletePostId = null;
+    pinEntry = ""; pinAction = null; deletePostId = null;
     updateDots();
   }
 
@@ -565,7 +403,6 @@
       if (pinEntry.length >= PIN_LENGTH) return;
       pinEntry += btn.dataset.n;
       updateDots();
-      
       if (pinEntry.length === PIN_LENGTH) {
         setTimeout(async () => {
           if (pinEntry === ADMIN_PIN) {
@@ -574,216 +411,237 @@
               closePinModal();
               postForm.classList.add("show");
               adminToggle.classList.add("active");
-              updateDeleteButtons();
+              reorderHint.classList.add("show");
+              updateAdminUI();
             } else if (pinAction === 'delete' && deletePostId) {
-              try {
-                await deleteDoc(doc(db, "posts", deletePostId));
-                closePinModal();
-              } catch (err) {
-                pinError.textContent = "Delete failed: " + err.message;
-                pinEntry = "";
-                updateDots();
-              }
+              try { await deleteDoc(doc(db,"posts",deletePostId)); closePinModal(); }
+              catch(err) { pinError.textContent = "Error: "+err.message; pinEntry=""; updateDots(); }
             }
-          } else {
-            shakeError();
-          }
+          } else { shakeError(); }
         }, 150);
       }
     });
   });
 
-  delBtn.addEventListener("click", () => { pinEntry = pinEntry.slice(0, -1); updateDots(); });
-
+  delBtn.addEventListener("click", () => { pinEntry = pinEntry.slice(0,-1); updateDots(); });
   adminToggle.addEventListener("click", () => {
     if (isAdmin) {
       isAdmin = false;
       postForm.classList.remove("show");
       adminToggle.classList.remove("active");
-      updateDeleteButtons();
-    } else {
-      openPinModal('admin');
-    }
+      reorderHint.classList.remove("show");
+      updateAdminUI();
+    } else { openPinModal('admin'); }
   });
-
   modalClose.addEventListener("click", closePinModal);
-  pinOverlay.addEventListener("click", e => { if (e.target === pinOverlay) closePinModal(); });
+  pinOverlay.addEventListener("click", e => { if (e.target===pinOverlay) closePinModal(); });
 
   submitPost.addEventListener("click", async () => {
-    const title = postTitle.value.trim();
-    const body  = postBody.value.trim();
-    if (!title || !body) { formMsg.textContent = "Fill in both fields."; return; }
-    submitPost.disabled = true;
-    formMsg.textContent = "…";
+    const title = postTitle.value.trim(), body = postBody.value.trim();
+    if (!title||!body) { formMsg.textContent="Fill in both fields."; return; }
+    submitPost.disabled = true; formMsg.textContent = "…";
     try {
-      await addDoc(collection(db, "posts"), { title, body, createdAt: serverTimestamp() });
-      postTitle.value = "";
-      postBody.value  = "";
-      formMsg.textContent = "✓!";
-      setTimeout(() => formMsg.textContent = "", 2500);
-    } catch (err) {
-      formMsg.textContent = "Error: " + err.message;
-    }
-    submitPost.disabled = false;
+      const ref = await addDoc(collection(db,"posts"), { title, body, createdAt: serverTimestamp() });
+      postTitle.value=""; postBody.value="";
+      formMsg.textContent="✓ 🌸";
+      customOrder.unshift(ref.id); saveOrder();
+      setTimeout(()=>formMsg.textContent="",2500);
+    } catch(err) { formMsg.textContent="Error: "+err.message; }
+    submitPost.disabled=false;
   });
 
-  // Search functionality
-  searchInput.addEventListener('input', (e) => {
-    searchTerm = e.target.value.toLowerCase().trim();
-    displayPosts();
-  });
+  searchInput.addEventListener('input', e => { searchTerm=e.target.value.toLowerCase().trim(); displayPosts(); });
 
-  function calculateRelevance(post, term) {
-    if (!term) return { score: 0, matches: [] };
-    
-    const title = post.title.toLowerCase();
-    const body = post.body.toLowerCase();
-    let score = 0;
-    const matches = [];
+  function saveOrder() { localStorage.setItem('postsOrder', JSON.stringify(customOrder)); }
 
-    // Exact title match gets highest score
-    if (title === term) score += 100;
-    // Title starts with search term
-    else if (title.startsWith(term)) score += 50;
-    // Title contains search term
-    else if (title.includes(term)) score += 30;
-
-    // Body contains search term
-    if (body.includes(term)) score += 10;
-
-    // Count occurrences
-    const titleMatches = (title.match(new RegExp(term, 'g')) || []).length;
-    const bodyMatches = (body.match(new RegExp(term, 'g')) || []).length;
-    
-    score += titleMatches * 5;
-    score += bodyMatches * 2;
-
-    return { score, titleMatches, bodyMatches };
+  function getSortedPosts(posts) {
+    const ids = posts.map(p=>p.id);
+    ids.forEach(id => { if (!customOrder.includes(id)) customOrder.push(id); });
+    customOrder = customOrder.filter(id=>ids.includes(id));
+    saveOrder();
+    return [...posts].sort((a,b) => customOrder.indexOf(a.id) - customOrder.indexOf(b.id));
   }
 
-  function highlightText(text, term) {
-    if (!term) return escHtml(text);
-    const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-    return escHtml(text).replace(regex, '<span class="highlight">$1</span>');
+  function calcRelevance(post, term) {
+    if (!term) return 0;
+    const t=post.title.toLowerCase(), b=post.body.toLowerCase();
+    let s=0;
+    if(t===term) s+=100; else if(t.startsWith(term)) s+=50; else if(t.includes(term)) s+=30;
+    if(b.includes(term)) s+=10;
+    s += (t.match(new RegExp(term,'g'))||[]).length*5;
+    s += (b.match(new RegExp(term,'g'))||[]).length*2;
+    return s;
+  }
+
+  function hlText(text, term) {
+    if (!term) return esc(text);
+    const rx = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi');
+    return esc(text).replace(rx,'<span class="highlight">$1</span>');
   }
 
   function displayPosts() {
-    postsContainer.innerHTML = "";
-    
-    if (allPosts.length === 0) {
-      postsContainer.innerHTML = `<div class="empty-state"><div class="big">Nothing yet.</div><small>The author hasn't posted anything.</small></div>`;
-      searchStats.textContent = "";
-      return;
+    postsContainer.innerHTML="";
+    if (allPosts.length===0) {
+      postsContainer.innerHTML=`<div class="empty-state"><div class="big">Nothing yet 🌸</div><small>Be the first to post!</small></div>`;
+      searchStats.textContent=""; return;
     }
-
-    let filteredPosts = allPosts;
-
-    // Filter and sort by relevance if searching
+    let list = getSortedPosts(allPosts);
     if (searchTerm) {
-      filteredPosts = allPosts
-        .map(post => ({
-          ...post,
-          relevance: calculateRelevance(post, searchTerm)
-        }))
-        .filter(post => post.relevance.score > 0)
-        .sort((a, b) => b.relevance.score - a.relevance.score);
+      list = list.map(p=>({...p,_r:calcRelevance(p,searchTerm)})).filter(p=>p._r>0).sort((a,b)=>b._r-a._r);
+      searchStats.textContent = `${list.length} result${list.length!==1?'s':''} found 🌸`;
+      if (list.length===0) { postsContainer.innerHTML=`<div class="empty-state"><div class="big">No matches 🌸</div><small>Try different keywords.</small></div>`; return; }
+    } else { searchStats.textContent=""; }
 
-      searchStats.textContent = `${filteredPosts.length} result${filteredPosts.length !== 1 ? 's' : ''} found`;
+    list.forEach(p => postsContainer.appendChild(renderPost(p.id, p, searchTerm)));
+    if (isAdmin && !searchTerm) initDragDrop();
+  }
 
-      if (filteredPosts.length === 0) {
-        postsContainer.innerHTML = `<div class="empty-state"><div class="big">No matches.</div><small>Try different keywords.</small></div>`;
-        return;
-      }
-    } else {
-      searchStats.textContent = "";
-    }
+  function updateAdminUI() {
+    document.querySelectorAll('.admin-actions').forEach(el=>el.classList.toggle('show',isAdmin));
+    document.querySelectorAll('.drag-handle').forEach(el=>el.classList.toggle('show',isAdmin));
+    document.querySelectorAll('.post-card').forEach(el=>el.classList.toggle('draggable',isAdmin));
+    document.querySelectorAll('.comment-admin-btns').forEach(el=>el.classList.toggle('show',isAdmin));
+    if (isAdmin&&!searchTerm) initDragDrop();
+  }
 
-    filteredPosts.forEach(post => {
-      postsContainer.appendChild(renderPost(post.id, post, searchTerm));
+  /* ── DRAG & DROP ── */
+  let dragSrc = null;
+  function initDragDrop() {
+    postsContainer.querySelectorAll('.post-card').forEach(card => {
+      card.setAttribute('draggable','true');
+      card.ondragstart = e => { dragSrc=card; card.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; };
+      card.ondragend   = () => {
+        card.classList.remove('dragging');
+        postsContainer.querySelectorAll('.post-card').forEach(c=>c.classList.remove('drag-over'));
+        customOrder = [...postsContainer.querySelectorAll('.post-card')].map(c=>c.dataset.postId);
+        saveOrder();
+      };
+      card.ondragover  = e => { e.preventDefault(); if(card!==dragSrc){ postsContainer.querySelectorAll('.post-card').forEach(c=>c.classList.remove('drag-over')); card.classList.add('drag-over'); } };
+      card.ondrop      = e => {
+        e.preventDefault();
+        if(card!==dragSrc) {
+          const cards=[...postsContainer.querySelectorAll('.post-card')];
+          if(cards.indexOf(dragSrc)<cards.indexOf(card)) card.after(dragSrc); else card.before(dragSrc);
+          card.classList.remove('drag-over');
+        }
+      };
     });
   }
 
-  function updateDeleteButtons() {
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-      btn.classList.toggle('show', isAdmin);
-    });
-  }
-
-  function formatDate(ts) {
-    if (!ts) return "uduuhun";
-    const d = ts.toDate ? ts.toDate() : new Date(ts);
-    return d.toLocaleDateString("en-US", { year:"numeric", month:"long", day:"numeric" }) + "  ·  " + d.toLocaleTimeString("en-US", { hour:"2-digit", minute:"2-digit" });
-  }
-
-  function escHtml(s) {
-    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-  }
-
-  function loadComments(postId, listEl) {
-    const q = query(collection(db, "posts", postId, "comments"), orderBy("createdAt", "asc"));
-    onSnapshot(q, snap => {
-      listEl.innerHTML = "";
-      snap.forEach(d => {
-        const c = d.data();
-        listEl.innerHTML += `<div class="comment-item"><span class="comment-author">${escHtml(c.name || "Anonymous")}</span><span class="comment-time">${formatDate(c.createdAt)}</span><div class="comment-text">${escHtml(c.text)}</div></div>`;
-      });
-    });
-  }
-
-  function renderPost(id, data, highlightTerm = "") {
+  /* ── RENDER POST ── */
+  function renderPost(id, data, hl="") {
     const card = document.createElement("div");
-    card.className = "post-card";
-    
-    const titleHtml = highlightTerm ? highlightText(data.title, highlightTerm) : escHtml(data.title);
-    const bodyHtml = highlightTerm ? highlightText(data.body, highlightTerm) : escHtml(data.body);
-    
+    card.className = "post-card"+(isAdmin?" draggable":"");
+    card.dataset.postId = id;
+
     card.innerHTML = `
-      <button class="delete-btn ${isAdmin ? 'show' : ''}" data-post-id="${id}">Delete</button>
-      <div class="post-meta">${formatDate(data.createdAt)}</div>
-      <div class="post-title">${titleHtml}</div>
-      <div class="post-body">${bodyHtml}</div>
+      <div class="drag-handle ${isAdmin?'show':''}"><span></span><span></span><span></span></div>
+      <div class="admin-actions ${isAdmin?'show':''}">
+        <button class="action-btn edit-btn">✏ Edit</button>
+        <button class="action-btn delete-btn">✕ Delete</button>
+      </div>
+      <div class="post-meta">${fmtDate(data.createdAt)}</div>
+      <div class="post-title post-title-v">${hl?hlText(data.title,hl):esc(data.title)}</div>
+      <div class="post-body post-body-v">${hl?hlText(data.body,hl):esc(data.body)}</div>
+      <div class="edit-area">
+        <input class="edit-title-i" value="${escA(data.title)}" maxlength="120"/>
+        <textarea class="edit-body-i">${esc(data.body)}</textarea>
+        <button class="edit-save-btn">Save changes ✦</button>
+      </div>
       <div class="comments-section">
-        <div class="comments-label">♡ Comments</div>
+        <div class="comments-label">🌸 Comments</div>
         <div class="comments-list"></div>
         <div class="comment-form">
           <input class="comment-name" type="text" placeholder="Your name" maxlength="40"/>
           <input class="comment-text-input" type="text" placeholder="Leave a comment…" maxlength="500"/>
-          <button class="comment-submit">Send</button>
+          <button class="comment-submit">Send 🌸</button>
         </div>
-      </div>
-    `;
-    
-    card.querySelector('.delete-btn').addEventListener('click', () => {
-      openPinModal('delete', id);
+      </div>`;
+
+    card.querySelector('.delete-btn').addEventListener('click', ()=>openPinModal('delete',id));
+
+    const editBtn=card.querySelector('.edit-btn'), editArea=card.querySelector('.edit-area');
+    const tvEl=card.querySelector('.post-title-v'), bvEl=card.querySelector('.post-body-v');
+    editBtn.addEventListener('click', ()=>{
+      const on=editArea.classList.toggle('show');
+      tvEl.style.display=on?'none':''; bvEl.style.display=on?'none':'';
+      editBtn.textContent=on?'✕ Cancel':'✏ Edit';
     });
-    
-    loadComments(id, card.querySelector(".comments-list"));
-    
-    card.querySelector(".comment-submit").addEventListener("click", async () => {
-      const nameEl = card.querySelector(".comment-name");
-      const textEl = card.querySelector(".comment-text-input");
-      const name = nameEl.value.trim() || "Anonymous";
-      const text = textEl.value.trim();
-      if (!text) return;
+    card.querySelector('.edit-save-btn').addEventListener('click', async ()=>{
+      const t=card.querySelector('.edit-title-i').value.trim(), b=card.querySelector('.edit-body-i').value.trim();
+      if(!t||!b) return;
       try {
-        await addDoc(collection(db, "posts", id, "comments"), { name, text, createdAt: serverTimestamp() });
-        textEl.value = "";
-      } catch(e) { alert("Error: " + e.message); }
+        await updateDoc(doc(db,"posts",id),{title:t,body:b});
+        editArea.classList.remove('show'); tvEl.style.display=''; bvEl.style.display=''; editBtn.textContent='✏ Edit';
+        tvEl.innerHTML=esc(t); bvEl.innerHTML=esc(b);
+      } catch(err){alert("Save error: "+err.message);}
     });
-    
+
+    loadComments(id, card.querySelector(".comments-list"));
+
+    card.querySelector(".comment-submit").addEventListener("click", async ()=>{
+      const n=card.querySelector(".comment-name"), t=card.querySelector(".comment-text-input");
+      if(!t.value.trim()) return;
+      try { await addDoc(collection(db,"posts",id,"comments"),{name:n.value.trim()||"Anonymous",text:t.value.trim(),createdAt:serverTimestamp()}); t.value=""; }
+      catch(e){alert("Error: "+e.message);}
+    });
+
     return card;
   }
 
-  const postsQuery = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-  onSnapshot(postsQuery, snap => {
-    allPosts = [];
-    snap.forEach(d => {
-      allPosts.push({ id: d.id, ...d.data() });
+  /* ── COMMENTS ── */
+  function loadComments(postId, listEl) {
+    const q = query(collection(db,"posts",postId,"comments"), orderBy("createdAt","asc"));
+    onSnapshot(q, snap => {
+      listEl.innerHTML="";
+      snap.forEach(d => {
+        const c=d.data(), cid=d.id;
+        const item=document.createElement('div');
+        item.className='comment-item';
+        item.innerHTML=`
+          <div class="comment-admin-btns ${isAdmin?'show':''}">
+            <button class="comment-mini-btn edit">✏ Edit</button>
+            <button class="comment-mini-btn del">✕ Del</button>
+          </div>
+          <span class="comment-author">${esc(c.name||"Anonymous")}</span>
+          <span class="comment-time">${fmtDate(c.createdAt)}</span>
+          <div class="comment-text-display">${esc(c.text)}</div>
+          <div class="comment-edit-area">
+            <input class="comment-edit-input" value="${escA(c.text)}" maxlength="500"/>
+            <button class="comment-edit-save">Save ✦</button>
+          </div>`;
+
+        const ea=item.querySelector('.comment-edit-area'), td=item.querySelector('.comment-text-display');
+        item.querySelector('.comment-mini-btn.edit').addEventListener('click',()=>{ const on=ea.classList.toggle('show'); td.style.display=on?'none':''; });
+        item.querySelector('.comment-edit-save').addEventListener('click', async ()=>{
+          const nv=item.querySelector('.comment-edit-input').value.trim(); if(!nv) return;
+          try { await updateDoc(doc(db,"posts",postId,"comments",cid),{text:nv}); ea.classList.remove('show'); td.style.display=''; }
+          catch(err){alert("Error: "+err.message);}
+        });
+        item.querySelector('.comment-mini-btn.del').addEventListener('click', async ()=>{
+          if(confirm('Delete this comment?')) { try{await deleteDoc(doc(db,"posts",postId,"comments",cid));}catch(err){alert("Error: "+err.message);} }
+        });
+        listEl.appendChild(item);
+      });
     });
+  }
+
+  /* ── FIRESTORE ── */
+  onSnapshot(query(collection(db,"posts"),orderBy("createdAt","desc")), snap=>{
+    allPosts=[];
+    snap.forEach(d=>allPosts.push({id:d.id,...d.data()}));
     displayPosts();
-  }, err => {
-    postsContainer.innerHTML = `<div class="empty-state"><div class="big">Connection error.</div><small>${err.message}</small></div>`;
+  }, err=>{
+    postsContainer.innerHTML=`<div class="empty-state"><div class="big">Connection error 🌸</div><small>${err.message}</small></div>`;
   });
+
+  function fmtDate(ts) {
+    if(!ts) return "🌸 uduuhun";
+    const d=ts.toDate?ts.toDate():new Date(ts);
+    return d.toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"})+" · "+d.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"});
+  }
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+  function escA(s){ return String(s).replace(/"/g,"&quot;").replace(/'/g,"&#39;"); }
 </script>
 </body>
-</html>
+      </html>

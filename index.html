@@ -504,7 +504,7 @@
     if (isAdmin&&!searchTerm) initDragDrop();
   }
 
-  /* ── DRAG & DROP ── */
+  
   let dragSrc = null;
   function initDragDrop() {
     postsContainer.querySelectorAll('.post-card').forEach(card => {
@@ -528,7 +528,7 @@
     });
   }
 
-  /* ── RENDER POST ── */
+
   function renderPost(id, data, hl="") {
     const card = document.createElement("div");
     card.className = "post-card"+(isAdmin?" draggable":"");
@@ -589,7 +589,7 @@
     return card;
   }
 
-  /* ── COMMENTS ── */
+  
   function loadComments(postId, listEl) {
     const q = query(collection(db,"posts",postId,"comments"), orderBy("createdAt","asc"));
     onSnapshot(q, snap => {
@@ -626,7 +626,7 @@
     });
   }
 
-  /* ── FIRESTORE ── */
+  
   onSnapshot(query(collection(db,"posts"),orderBy("createdAt","desc")), snap=>{
     allPosts=[];
     snap.forEach(d=>allPosts.push({id:d.id,...d.data()}));

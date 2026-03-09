@@ -334,7 +334,7 @@
   const searchStats    = document.getElementById("searchStats");
   const reorderHint    = document.getElementById("reorderHint");
 
-  // ── Listen to order changes from Firebase in real time ──
+
   onSnapshot(ORDER_DOC, snap => {
     if (snap.exists()) {
       customOrder = snap.data().order || [];
@@ -342,13 +342,13 @@
     displayPosts();
   });
 
-  // ── Save order to Firebase (global for everyone) ──
+  
   async function saveOrder(newOrder) {
     customOrder = newOrder;
     await setDoc(ORDER_DOC, { order: newOrder });
   }
 
-  // ── PIN ──
+  
   function updateDots() {
     pinDots.querySelectorAll(".pin-dot").forEach((d,i) => { d.classList.toggle("filled", i < pinEntry.length); d.classList.remove("error"); });
     pinError.textContent = "";
@@ -410,7 +410,7 @@
   modalClose.addEventListener("click", closePinModal);
   pinOverlay.addEventListener("click", e => { if (e.target===pinOverlay) closePinModal(); });
 
-  // ── Submit new post ──
+  
   submitPost.addEventListener("click", async () => {
     const title = postTitle.value.trim(), body = postBody.value.trim();
     if (!title||!body) { formMsg.textContent="Fill in both fields."; return; }
@@ -419,7 +419,7 @@
       const ref = await addDoc(collection(db,"posts"), { title, body, createdAt: serverTimestamp() });
       postTitle.value=""; postBody.value="";
       formMsg.textContent="✓ 🌸";
-      // Add new post to front of global order
+      
       const newOrder = [ref.id, ...customOrder];
       await saveOrder(newOrder);
       setTimeout(()=>formMsg.textContent="",2500);
@@ -429,14 +429,14 @@
 
   searchInput.addEventListener('input', e => { searchTerm=e.target.value.toLowerCase().trim(); displayPosts(); });
 
-  // ── Sort posts using global customOrder ──
+  
   function getSortedPosts(posts) {
     const ids = posts.map(p=>p.id);
-    // Add any new IDs not yet in order
+  
     const newIds = ids.filter(id => !customOrder.includes(id));
-    // Remove deleted IDs
+
     const cleanOrder = [...customOrder.filter(id=>ids.includes(id)), ...newIds];
-    // If order changed (new/deleted posts), save it back
+    
     if (newIds.length > 0 || cleanOrder.length !== customOrder.length) {
       saveOrder(cleanOrder);
     }
@@ -485,7 +485,7 @@
     if (isAdmin&&!searchTerm) initDragDrop();
   }
 
-  // ── Drag & Drop — saves to Firebase on drop ──
+  
   let dragSrc = null;
   function initDragDrop() {
     postsContainer.querySelectorAll('.post-card').forEach(card => {
@@ -494,7 +494,7 @@
       card.ondragend   = async () => {
         card.classList.remove('dragging');
         postsContainer.querySelectorAll('.post-card').forEach(c=>c.classList.remove('drag-over'));
-        // Save new order to Firebase — everyone sees the change instantly
+    
         const newOrder = [...postsContainer.querySelectorAll('.post-card')].map(c=>c.dataset.postId);
         await saveOrder(newOrder);
       };
@@ -510,7 +510,7 @@
     });
   }
 
-  // ── Render Post ──
+  
   function renderPost(id, data, hl="") {
     const card = document.createElement("div");
     card.className = "post-card"+(isAdmin?" draggable":"");
@@ -571,7 +571,7 @@
     return card;
   }
 
-  // ── Load Comments ──
+  
   function loadComments(postId, listEl) {
     const q = query(collection(db,"posts",postId,"comments"), orderBy("createdAt","asc"));
     onSnapshot(q, snap => {
@@ -608,7 +608,7 @@
     });
   }
 
-  // ── Firestore posts listener ──
+  
   onSnapshot(query(collection(db,"posts"),orderBy("createdAt","desc")), snap=>{
     allPosts=[];
     snap.forEach(d=>allPosts.push({id:d.id,...d.data()}));

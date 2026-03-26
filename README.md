@@ -35,3 +35,4 @@ html нь анх 1991 онд бүтээгдсэн.
 html нь интернэт дэх бүхий л веб саятын суурь болж өгдөг учир.
 </body>
 </html>
+https://script.google.com/macros/s/AKfycbwVnkSIChC6Z3tj9QetnMPwiwUIUzXpvLIPBfbECjfeE-1xQVVqD5lohdDXR_cQNhv7-g/exec
